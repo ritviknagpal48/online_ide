@@ -87,6 +87,7 @@ const Textbox = ({ lang, lang_id }) => {
             // console.log({ value });
           }}
         />
+        <i>{'Current Language :' + lang}</i>
         <h4 className='#f9a825 yellow-text text-darken-3'>Input</h4>
         <textarea
           rows='4'
