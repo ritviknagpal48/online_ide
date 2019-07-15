@@ -4,26 +4,22 @@ import PropTypes from 'prop-types';
 const Navbar = ({}) => {
   return (
     <div>
-      <nav>
-        <div className='nav-wrapper #80cbc4 teal lighten-3'>
-          <a href='/' className='brand-logo'>
+      <nav className='#616161 grey darken-2'>
+        <div className='nav-wrapper'>
+          <a href='/' className='brand-logo center'>
             <b
-              className='#004d40 teal-text text-darken-4'
+              className='#f9a825 yellow-text text-darken-3'
               style={{ fontSize: '70px' }}
             >
               IDE
             </b>
           </a>
-          <ul className='right hide-on-med-and-down'>
+          <ul id='nav-mobile' class='right hide-on-med-and-down'>
             <li>
-              <button type='submit' className='btn waves-effect waves-light'>
-                C++
-              </button>
+              <a href='/c++'>C++</a>
             </li>
             <li>
-              <button type='submit' className='btn waves-effect waves-light'>
-                Python
-              </button>
+              <a href='/python'>Python</a>
             </li>
           </ul>
         </div>

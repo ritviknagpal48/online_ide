@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import CodeMirror from '@uiw/react-codemirror';
-import 'codemirror/addon/display/autorefresh';
-import 'codemirror/addon/comment/comment';
-import 'codemirror/addon/edit/matchbrackets';
-import 'codemirror/keymap/sublime';
-import 'codemirror/theme/dracula.css';
+// import CodeMirror from '@uiw/react-codemirror';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/yonce.css';
 
-const Textbox = () => {
-  const [language, setLanguage] = useState('C++');
-  const [code, setCode] = useState('//Enter your C++ code here');
+import 'codemirror/mode/clojure/clojure.js';
+
+// import 'codemirror/theme/dracula.css';
+
+const Textbox = ({ lang, lang_id }) => {
+  const [language, setLanguage] = useState(lang);
+  const [code, setCode] = useState('');
   const [token, setToken] = useState(null);
   const [output, setOutput] = useState('');
   const [input, setInput] = useState('');
+  const [id, setId] = useState(parseInt(lang_id));
   const onChange1 = e => {
     setCode(e.target.value);
   };
@@ -25,24 +28,34 @@ const Textbox = () => {
   const getOutput = e => {
     e.preventDefault();
 
-    // console.log('Hello, Ritvik this side');
     axios
       .post(`https://api.judge0.com/submissions`, {
         source_code: code,
-        language_id: 12,
+        language_id: id,
         stdin: input
       })
       .then(f => {
-        // console.log(f.data.token);
+        console.log(f);
         setToken(f.data.token);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    axios
-      .get(`https://api.judge0.com/submissions/${token}`)
-      .then(g => {
-        setOutput(g.data.stdout);
+        axios
+          .get(`https://api.judge0.com/submissions/${token}`)
+          .then(g => {
+            console.log(g);
+            if (g.data.stdout != null) {
+              setOutput(g.data.stdout);
+            } else {
+              setOutput(
+                g.data.message +
+                  '\n' +
+                  g.data.status.description +
+                  '\n' +
+                  g.data.stderr
+              );
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       })
       .catch(error => {
         console.log(error);
@@ -52,62 +65,66 @@ const Textbox = () => {
   return (
     <div>
       <form onSubmit={getOutput} className='form'>
-        <textarea
+        {/* <textarea
+          id='id1'
           rows='4'
-          id='codemirror_input'
           cols='20'
-          className='#e0f2f1 teal lighten-5'
+          className='#ffe082 amber lighten-4'
           style={{ height: '500px' }}
           value={code}
           onChange={onChange1}
-        />
+        /> */}
         <CodeMirror
-          name='comment'
           value={code}
+          style={{ height: '1000px' }}
           options={{
-            theme: 'dracula',
-            keyMap: 'sublime',
             mode: 'clojure',
-            lineNumbers: true,
-            rtlMoveVisually: true,
-            readOnly: true
+            theme: 'yonce',
+            lineNumbers: true
+          }}
+          onChange={(editor, data, value) => {
+            setCode(value);
+            // console.log({ value });
           }}
         />
-
+        <h4 className='#f9a825 yellow-text text-darken-3'>Input</h4>
         <textarea
           rows='4'
           cols='20'
           name='comment'
           form='usrform'
           placeholder='Enter your input here'
-          className='#e0f2f1 teal lighten-5'
-          style={{ height: '100px' }}
+          className='#ffe082 amber lighten-4 #3e2723 brown-text text-darken-1'
+          style={{ height: '150px' }}
           value={input}
           onChange={onChange2}
         />
-
         {/* <input
               value={output}
               style={{ overflow: 'scroll', height: '200px' }}
             /> */}
+        <h4 className='#f9a825 yellow-text text-darken-3'>Output</h4>
         <textarea
           rows='4'
           cols='20'
           name='comment'
           form='usrform'
-          className='#e0f2f1 teal lighten-5'
-          style={{ height: '100px' }}
+          className='#ffe082 amber lighten-4 #3e2723 brown-text text-darken-1'
+          style={{ height: '150px', fontWeight: 'bold' }}
           value={output}
         />
-
         <input
           type='submit'
           value='Run'
-          className='btn waves-effect waves-light'
+          style={{ width: '150px' }}
+          className=' btn waves-effect #f9a825 yellow darken-3'
         />
       </form>
     </div>
   );
 };
-
+Textbox.propTypes = {
+  lang: PropTypes.string.isRequired,
+  lang_id: PropTypes.number.isRequired
+};
 export default Textbox;
