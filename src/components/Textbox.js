@@ -5,8 +5,8 @@ import axios from 'axios';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/yonce.css';
-
-import 'codemirror/mode/clike/clike.js';
+import 'codemirror/addon/edit/closebrackets.js';
+import 'codemirror/mode/clojure/clojure.js';
 
 const Textbox = ({ lang, lang_id }) => {
   const [language, setLanguage] = useState(lang);
@@ -52,6 +52,9 @@ const Textbox = ({ lang, lang_id }) => {
             }
           })
           .catch(error => {
+            if (output.length === 0) {
+              setOutput(error);
+            }
             console.log(error);
           });
       })
@@ -76,10 +79,10 @@ const Textbox = ({ lang, lang_id }) => {
           value={code}
           style={{ height: '1000px' }}
           options={{
-            mode: 'clike',
+            mode: 'clojure',
             theme: 'yonce',
-            lineNumbers: true
-            // autoCloseBrackets: true
+            lineNumbers: true,
+            autoCloseBrackets: true
           }}
           onBeforeChange={(editor, data, value) => {
             setCode(value);
