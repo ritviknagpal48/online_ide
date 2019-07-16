@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-// import CodeMirror from '@uiw/react-codemirror';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+
+import { Controlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/yonce.css';
 
-import 'codemirror/mode/clojure/clojure.js';
-
-// import 'codemirror/theme/dracula.css';
+import 'codemirror/mode/clike/clike.js';
 
 const Textbox = ({ lang, lang_id }) => {
   const [language, setLanguage] = useState(lang);
@@ -78,11 +76,12 @@ const Textbox = ({ lang, lang_id }) => {
           value={code}
           style={{ height: '1000px' }}
           options={{
-            mode: 'clojure',
+            mode: 'clike',
             theme: 'yonce',
             lineNumbers: true
+            // autoCloseBrackets: true
           }}
-          onChange={(editor, data, value) => {
+          onBeforeChange={(editor, data, value) => {
             setCode(value);
             // console.log({ value });
           }}
